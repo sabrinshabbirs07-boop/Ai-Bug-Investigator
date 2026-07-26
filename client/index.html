@@ -6,17 +6,71 @@
   <title>AI Bug Investigator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <main>
     <h1>AI Bug Investigator</h1>
-    <p>Foundation build — Day 3</p>
+    <p class="subtitle">Paste an error. Understand it. Fix it.</p>
 
-    <button id="checkHealthBtn">
-      Check Backend Connection
-    </button>
+    <form id="analyzeForm">
+      <label for="errorMessage">Error message / stack trace *</label>
+      <textarea id="errorMessage" rows="5" required></textarea>
 
-    <p id="healthResult"></p>
+      <label for="codeSnippet">Related code (optional)</label>
+      <textarea id="codeSnippet" rows="5"></textarea>
+
+      <label for="language">Language</label>
+      <select id="language">
+        <option value="auto">Auto-detect</option>
+        <option value="javascript">JavaScript</option>
+        <option value="typescript">TypeScript</option>
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+        <option value="csharp">C#</option>
+        <option value="cpp">C++</option>
+        <option value="go">Go</option>
+        <option value="php">PHP</option>
+        <option value="ruby">Ruby</option>
+        <option value="sql">SQL</option>
+      </select>
+
+      <button type="submit" id="submitBtn">Investigate</button>
+    </form>
+
+    <div id="errorBanner" class="error-banner" hidden></div>
+
+    <section id="results" hidden>
+      <div class="results-header">
+        <span id="severityBadge" class="severity-badge"></span>
+        <span id="confidenceText"></span>
+        <button id="newAnalysisBtn" type="button">New Analysis</button>
+      </div>
+
+      <div class="card">
+        <h3>Root Cause</h3>
+        <p id="rootCause"></p>
+      </div>
+
+      <div class="card">
+        <h3>Debugging Steps</h3>
+        <ol id="debuggingSteps"></ol>
+      </div>
+
+      <div class="card">
+        <h3>Suggested Fix</h3>
+        <p id="fixExplanation"></p>
+        <pre><code id="fixCode"></code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Prevention Tips</h3>
+        <ul id="preventionTips"></ul>
+      </div>
+
+      <div class="card" id="resourcesCard">
+        <h3>Related Resources</h3>
+        <ul id="resources"></ul>
+      </div>
+    </section>
   </main>
 
   <script src="script.js"></script>
