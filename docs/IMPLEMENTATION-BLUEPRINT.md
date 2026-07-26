@@ -1,6 +1,6 @@
-# AI Bug Investigator — Implementation Blueprint (Days 2–10)
+# AI Bug Investigator — Implementation Blueprint (Days 2, 4–11)
 
-**Updated Day 2** — reflects two approved refinements from the Day 2 System Design session: (1) centralized backend error-handling middleware, and (2) a collapsible IDE-style sidebar consolidating the Sample Error Library and History panel. Both changes are additive/simplifying — no scope was added, and the Day 10 timeline is unchanged. See `docs/ARCHITECTURE.md`, `docs/SCHEMA.md`, `docs/API.md`, `docs/UI-WIREFRAMES.md`, and `docs/PROJECT-STRUCTURE.md` for full Day 2 design detail.
+**Updated Day 3** — day numbers have been relabeled to match the actual AB Talks challenge day numbers. The original 10-day blueprint (Days 1–10) is now Days 1–2 + 4–11, because Day 3 (Project Setup & Foundation) was run as its own full challenge day rather than folded into Day 2. No content, scope, or timeline length changed — only the labels. Day 2 also reflects two approved refinements from the Day 2 System Design session: (1) centralized backend error-handling middleware, and (2) a collapsible IDE-style sidebar consolidating the Sample Error Library and History panel. See `docs/ARCHITECTURE.md`, `docs/SCHEMA.md`, `docs/API.md`, `docs/UI-WIREFRAMES.md`, and `docs/PROJECT-STRUCTURE.md` for full Day 2 design detail, and `docs/DAY3-SUMMARY.md` for what was completed on Day 3.
 
 **This document is the single source of truth for the rest of the capstone.** Each day is written so that a fresh AI conversation (or you working solo) can pick it up with zero prior context and continue building without redesigning or re-planning anything. Do not skip ahead or improvise architecture — if you want to change something, update this document first.
 
@@ -63,12 +63,39 @@ ai-bug-investigator/
 - [x] Day 3 readiness check passed — no scope creep
 - [x] Five design documents generated and committed to `docs/`
 
-### ➡️ Handoff notes for Day 3
-All design decisions are locked and documented in `docs/`. Day 3 builds the real backend: `server/index.js`, `routes/health.js`, `routes/analyze.js`, `services/groqService.js`, `middleware/errorHandler.js`, and `utils/parseAIResponse.js`, exactly per the folder structure in `docs/PROJECT-STRUCTURE.md` and the API contract in `docs/API.md`. No further design decisions are needed — implementation can start immediately.
+### ➡️ Handoff notes for Day 4
+All design decisions are locked and documented in `docs/`. Day 3 builds the project foundation — folder scaffolding, environment setup, a working `server/index.js` and `routes/health.js`, plus a frontend skeleton — all now complete. Day 4 builds the real AI-powered backend: `routes/analyze.js`, `services/groqService.js`, and `utils/parseAIResponse.js`, exactly per the folder structure in `docs/PROJECT-STRUCTURE.md` and the API contract in `docs/API.md`. No further design decisions are needed — implementation can start immediately.
 
 ---
 
-## Day 3 — Groq API Integration & Core Prompt Engineering
+## Day 3 — Project Setup & Foundation ✅ COMPLETED
+
+### 🎯 Objective
+Turn the Day 2 architecture into a real, running project: verified environment, initialized backend and frontend, foundational files in place, Git workflow established, full-stack "Hello World" verified working.
+
+### What actually happened Day 3 (summary)
+- Verified environment: Node.js v23.11.0, npm 10.9.2, Git 2.50.1, VS Code + 4 extensions (ESLint, Prettier, DotENV, Thunder Client).
+- Backend initialized (`npm init -y`), installed `express`, `cors`, `dotenv`. `.env` / `.env.example` created.
+- Built `server/index.js` (Express entry point), `routes/health.js` (`GET /api/health`), `middleware/errorHandler.js` (scaffolded, to be fully exercised Day 4).
+- Built frontend skeleton: `client/index.html`, `style.css`, `script.js` with a minimal API client stub, verified end-to-end against the health check.
+- Established Git branching strategy (`main` = stable, `dayN-<description>` branches merged in once verified); created `day3-project-setup`, committed, merged to `main`, pushed.
+- Verified live folder structure against `docs/PROJECT-STRUCTURE.md` — no drift.
+- Generated and committed: `docs/SETUP.md`, `docs/ENVIRONMENT.md`, `docs/DAY3-SUMMARY.md`, updated `docs/PROJECT-STRUCTURE.md`.
+
+### ✅ End-of-day checklist
+- [x] Environment verified and all tools confirmed working
+- [x] Backend skeleton runs locally, `/api/health` returns `{"status":"ok"}`
+- [x] Frontend skeleton verified talking to backend end-to-end
+- [x] Git branching strategy established, day's work merged to `main`
+- [x] Project structure verified against Day 2 design — no drift
+- [x] Four documentation deliverables generated and committed
+
+### ➡️ Handoff notes for Day 4
+Backend and frontend scaffolding are both in place and verified working. Empty folders (`routes/`, `services/`, `middleware/`, `utils/`) are ready for Day 4 to fill in `routes/analyze.js`, `services/groqService.js`, and `utils/parseAIResponse.js`. `middleware/errorHandler.js` exists and is wired into `index.js`, ready to catch real errors starting Day 4. No further setup needed — Day 4 begins implementation immediately.
+
+---
+
+## Day 4 — Groq API Integration & Core Prompt Engineering
 
 ### 🎯 Objective
 Build the backend's core intelligence: a working `/api/analyze` endpoint that sends a structured prompt to Groq and returns clean, structured JSON matching the PRD's required output fields.
@@ -154,12 +181,12 @@ server/
 - Postman/Thunder Client/curl screenshot showing an error response (e.g., empty `errorMessage`) in the standard error shape
 - Terminal logs showing no unhandled errors during testing
 
-### ➡️ Handoff notes for Day 4
+### ➡️ Handoff notes for Day 5
 Backend intelligence is complete and stable, including centralized error handling. The locked response schema (`docs/SCHEMA.md`) is the contract the frontend will render against — do not change field names without updating that document. Day 4 shifts entirely to frontend: building the real input form and wiring it to this working `/api/analyze` endpoint (basic styling only; full IDE-themed UI polish comes Day 5-6).
 
 ---
 
-## Day 4 — Core Frontend: Input Form & Live Analysis Rendering
+## Day 5 — Core Frontend: Input Form & Live Analysis Rendering
 
 ### 🎯 Objective
 Build the real user-facing input form and connect it end-to-end to the working backend, rendering the AI's structured response on screen in basic (not yet fully styled) form. By end of day, the full core loop works in the browser.
@@ -194,7 +221,7 @@ client/
 ```
 
 ### 🔗 APIs, libraries, services, or tools to integrate
-- Backend `/api/analyze` endpoint (from Day 3), called locally at this stage
+- Backend `/api/analyze` endpoint (from Day 4), called locally at this stage
 
 ### 🧪 Testing tasks
 - Submit with empty error field — confirm validation blocks submission with a clear message.
@@ -220,12 +247,12 @@ client/
 - Screenshot of a fully rendered analysis result (basic styling)
 - Screenshot of the error state (e.g., backend intentionally stopped)
 
-### ➡️ Handoff notes for Day 5
+### ➡️ Handoff notes for Day 6
 The core product works end-to-end locally, just unstyled. The DOM structure/IDs used for the results section should stay stable, since Day 5-6 will restyle heavily but should not need to change the JS logic much. Day 5 begins the visual design system: dark IDE-inspired theme, typography, layout, and severity badge styling.
 
 ---
 
-## Day 5 — Visual Design System: Dark IDE-Inspired Theme
+## Day 6 — Visual Design System: Dark IDE-Inspired Theme
 
 ### 🎯 Objective
 Transform the functional-but-plain UI into the polished, dark, IDE-inspired "debugging workspace" described in the PRD — establishing a design system (colors, typography, spacing, components) that the rest of the build will reuse consistently.
@@ -286,12 +313,12 @@ client/
 - Full-page screenshot of a completed analysis result showing all card types and a severity badge
 - Close-up screenshot of the severity badge component in at least 2 different severity levels
 
-### ➡️ Handoff notes for Day 6
+### ➡️ Handoff notes for Day 7
 The core visual design system is locked (colors, fonts, spacing, component styles). Day 6 builds the remaining "wow" features (sample error library, copy-to-clipboard, shareable results) using this same design system, and does the full responsive/mobile pass. Do not introduce new colors or fonts on Day 6 — reuse the system established today.
 
 ---
 
-## Day 6 — Wow Features: Sample Library, Copy, Share & Responsive Pass
+## Day 7 — Wow Features: Sample Library, Copy, Share & Responsive Pass
 
 ### 🎯 Objective
 Add the differentiating "wow" features from the PRD and make the entire app fully responsive across desktop and mobile, using the design system from Day 5.
@@ -358,12 +385,12 @@ client/
 - Screenshot of a shared/read-only result view opened from a generated link
 - Mobile-width screenshot of the full app (dev tools device view is fine)
 
-### ➡️ Handoff notes for Day 7
+### ➡️ Handoff notes for Day 8
 All planned v1.0 features are now functionally complete and running locally, fully styled and responsive. Day 7 is dedicated entirely to structured testing and bug fixing — no new features should be added. Known trouble spots to test hardest: AI JSON parsing edge cases, share-link decoding, and localStorage edge cases.
 
 ---
 
-## Day 7 — Structured Testing & Bug Fixing
+## Day 8 — Structured Testing & Bug Fixing
 
 ### 🎯 Objective
 Systematically test the entire application, log every bug found, and fix all Critical/High issues before deployment. No new features today — this is a hardening day.
@@ -403,7 +430,7 @@ client/
 - Cross-browser spot check if possible (e.g., Chrome + one other browser).
 
 ### 🐞 Common issues and debugging tips
-- **AI occasionally returns malformed JSON under certain inputs:** revisit the prompt from Day 3, add a stricter instruction and/or a retry-once pattern on parse failure before surfacing an error to the user.
+- **AI occasionally returns malformed JSON under certain inputs:** revisit the prompt from Day 4, add a stricter instruction and/or a retry-once pattern on parse failure before surfacing an error to the user.
 - **Very long stack traces cause slow responses or truncation:** consider trimming extremely long input server-side before sending to Groq, with a note to the user if truncation occurred.
 - **Old localStorage entries from earlier days break new history rendering (schema changed since Day 6):** add a version check or defensive parsing so old/malformed entries don't crash the history panel.
 
@@ -418,12 +445,12 @@ client/
 - Screenshot or excerpt of `BUGLOG.md` showing tracked and resolved issues
 - Screenshot of the app successfully handling a deliberately messy/edge-case input
 
-### ➡️ Handoff notes for Day 8
+### ➡️ Handoff notes for Day 9
 The application is functionally stable and tested locally. No known Critical/High bugs remain open. Day 8 moves to deployment: getting the backend live on Render and the frontend live on Vercel, and connecting them in production.
 
 ---
 
-## Day 8 — Deployment: Backend (Render) & Frontend (Vercel)
+## Day 9 — Deployment: Backend (Render) & Frontend (Vercel)
 
 ### 🎯 Objective
 Deploy the backend to Render and the frontend to Vercel, connect them in production, and confirm the full live application works publicly end-to-end.
@@ -488,12 +515,12 @@ README.md              (add live demo link)
 - Vercel dashboard showing the live, successfully deployed frontend project
 - Screenshot of the full live app working end-to-end at its public URL
 
-### ➡️ Handoff notes for Day 9
+### ➡️ Handoff notes for Day 10
 The application is fully live and publicly accessible. Both the Render backend URL and Vercel frontend URL should be recorded in the README. Day 9 focuses on final polish, performance/edge-case checks against the live (not local) environment, and preparing all portfolio/presentation materials.
 
 ---
 
-## Day 9 — Final Polish, Live QA & Portfolio Prep
+## Day 10 — Final Polish, Live QA & Portfolio Prep
 
 ### 🎯 Objective
 Polish the live product to a truly presentable state, do a final full QA pass against the live URLs (not localhost), and prepare all supporting portfolio materials (README, screenshots, demo script) ahead of Day 10's final presentation/showcase.
@@ -512,7 +539,7 @@ Polish the live product to a truly presentable state, do a final full QA pass ag
 3. Re-run the Day 7 test plan against the **live production URLs** end-to-end (not local) — production environments occasionally surface issues local testing didn't (timing, cold starts, real network latency).
 4. Fix any final Medium-severity issues discovered; do not start new features at this stage.
 5. Write/finalize `README.md` with: project name and one-line pitch, problem statement, live demo link, screenshot(s), feature list, tech stack, how it works (brief architecture summary), and clear "Future Scope" section matching the PRD.
-6. Prepare a short (60-90 second) live demo script/talking path for Day 10: which sample error to show, what to point out (severity + confidence, structured fix, copy/share), and the one-sentence problem/solution framing to open with.
+6. Prepare a short (60-90 second) live demo script/talking path for Day 11: which sample error to show, what to point out (severity + confidence, structured fix, copy/share), and the one-sentence problem/solution framing to open with.
 7. Capture final polished screenshots of: landing/empty state, a completed analysis, the severity badge close-up, and the mobile view — these will be reused in the pitch deck and README.
 8. Tag/commit this state clearly in Git (e.g., a `v1.0` commit message or Git tag) marking it as the capstone-complete version.
 
@@ -551,12 +578,12 @@ client/favicon.ico         (new, simple)
 - Final polished completed-analysis view
 - Final README as rendered on GitHub
 
-### ➡️ Handoff notes for Day 10
+### ➡️ Handoff notes for Day 11
 The product is complete, deployed, tested live, and documented. Day 10 is presentation and wrap-up only — no further building. All materials needed (screenshots, live link, demo script, README, PRD, this blueprint, and the pitch deck) should already exist by the start of Day 10.
 
 ---
 
-## Day 10 — Launch Day: Final Showcase & Wrap-Up
+## Day 11 — Launch Day: Final Showcase & Wrap-Up
 
 ### 🎯 Objective
 Deliver a confident final presentation of the live, deployed AI Bug Investigator, and formally close out the capstone with all deliverables in place.

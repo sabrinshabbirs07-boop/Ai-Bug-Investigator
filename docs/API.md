@@ -1,6 +1,6 @@
 # API.md — AI Bug Investigator
 
-**Status:** Approved Day 2 · v1.0
+**Status:** Approved Day 2 · Implemented & verified Day 4 · v1.0
 **API surface:** 2 endpoints, intentionally minimal. No authentication in v1.0.
 **Error contract:** All errors, from any endpoint, return the same shape via centralized error-handling middleware:
 
@@ -24,6 +24,8 @@
 ---
 
 ## `POST /api/analyze`
+
+**✅ Implemented and tested Day 4** — verified across JavaScript, Python, Java, SQL, and an auto-detect case, plus empty-input validation and a vague-error edge case. All passed.
 
 | Field | Details |
 |---|---|
