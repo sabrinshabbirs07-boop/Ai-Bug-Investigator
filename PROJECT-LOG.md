@@ -75,5 +75,30 @@ Backend and frontend scaffolding are both in place and verified working. Day 4 b
 ---
 
 ## Day 4 — Groq API Integration & Core Prompt Engineering
-**Date:** [Day 4 date]
+**Date:** 25 July 2026
+**Status:** ✅ Complete
+
+### What was accomplished
+- Built `server/services/groqService.js` with a structured system prompt enforcing a strict JSON response schema, honest severity/confidence calibration, and language auto-detection.
+- Built `server/utils/parseAIResponse.js` — safe JSON parsing with a fallback regex extraction and field-level validation/defaults.
+- Built `server/routes/analyze.js` — full `POST /api/analyze` implementation with input validation (length limits, required fields) and centralized error handling via `next(err)`.
+- Wired `analyzeRoute` into `server/index.js`.
+- Replaced the Day 3 frontend test button with the real input form: error message (required), optional code snippet, language dropdown, and full dynamic rendering of every schema field (severity badge, confidence, root cause, debugging steps, fix with code, prevention tips, resources).
+- Verified the complete end-to-end loop working in-browser.
+- Cross-language tested: JavaScript, Python, Java, SQL, and auto-detect — all passed.
+- Edge-case tested: empty input validation, vague/short error message handling — both passed gracefully, no crashes.
+- Updated `docs/API.md` to mark `/api/analyze` as implemented and verified.
+- Corrected Implementation Blueprint day numbering (Day 3 = Project Setup, Day 4 = Groq Integration, etc., through Day 11) to match actual AB Talks challenge day numbers.
+
+### Repository
+- **Repo:** `sabrinshabbirs07-boop/Ai-Bug-Investigator`
+- **Commits:** `aa083c9` — "Day 4 core feature implementation", `bace7c2` — "Documentation verification updates"
+
+### Handoff to Day 5
+The core AI-powered feature is fully functional and tested across multiple languages and edge cases. Day 5 focuses entirely on visual design — transforming the current functional-but-plain UI into the polished, dark, IDE-inspired workspace described in the PRD and Pitch Deck. No backend changes expected.
+
+---
+
+## Day 5 — Visual Design System: Dark IDE-Inspired Theme
+**Date:** [Day 5 date]
 **Status:** ⏳ Not started
