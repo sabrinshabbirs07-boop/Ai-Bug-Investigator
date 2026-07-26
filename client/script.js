@@ -5,6 +5,7 @@ const errorMessageInput = document.getElementById("errorMessage");
 const codeSnippetInput = document.getElementById("codeSnippet");
 const languageSelect = document.getElementById("language");
 const submitBtn = document.getElementById("submitBtn");
+const submitBtnText = document.getElementById("submitBtnText");
 const errorBanner = document.getElementById("errorBanner");
 const resultsSection = document.getElementById("results");
 const newAnalysisBtn = document.getElementById("newAnalysisBtn");
@@ -50,7 +51,8 @@ function hideError() {
 
 function setLoading(isLoading) {
   submitBtn.disabled = isLoading;
-  submitBtn.textContent = isLoading ? "Investigating..." : "Investigate";
+  submitBtnText.textContent = isLoading ? "Investigating…" : "Investigate";
+  submitBtn.classList.toggle("is-loading", isLoading);
 }
 
 function renderResult(result) {
