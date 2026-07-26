@@ -19,10 +19,23 @@ const preventionTipsEl = document.getElementById("preventionTips");
 const resourcesEl = document.getElementById("resources");
 const resourcesCard = document.getElementById("resourcesCard");
 
-function escapeHTML(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
+const LANGUAGE_MAP = {
+  javascript: "javascript", js: "javascript",
+  typescript: "typescript", ts: "typescript",
+  python: "python", py: "python",
+  java: "java",
+  "c#": "csharp", csharp: "csharp",
+  "c++": "cpp", cpp: "cpp",
+  go: "go", golang: "go",
+  php: "php",
+  ruby: "ruby",
+  sql: "sql"
+};
+
+function getHljsLanguage(language) {
+  if (!language) return "plaintext";
+  const key = language.toLowerCase().trim();
+  return LANGUAGE_MAP[key] || "plaintext";
 }
 
 function showError(message) {
@@ -55,7 +68,12 @@ function renderResult(result) {
   });
 
   fixExplanationEl.textContent = result.fix.explanation;
+
+  fixCodeEl.className = `hljs language-${getHljsLanguage(result.language)}`;
   fixCodeEl.textContent = result.fix.code;
+  if (window.hljs) {
+    hljs.highlightElement(fixCodeEl);
+  }
 
   preventionTipsEl.innerHTML = "";
   result.preventionTips.forEach((tip) => {
