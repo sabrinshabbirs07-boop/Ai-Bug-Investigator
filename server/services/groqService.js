@@ -58,13 +58,14 @@ async function analyzeError({ errorMessage, codeSnippet, language }) {
         max_tokens: 1500
       })
     });
-  } catch (networkErr) {
-    const err = new Error("Could not reach the AI service. Please try again.");
-    err.status = 504;
-    err.code = "GROQ_NETWORK_ERROR";
-    throw err;
-  }
+} catch (networkErr) {
+  console.error("GROQ NETWORK ERROR:", networkErr.message);
 
+  const err = new Error("Could not reach the AI service. Please try again.");
+  err.status = 504;
+  err.code = "GROQ_NETWORK_ERROR";
+  throw err;
+}
  
 
   const data = await response.json();
