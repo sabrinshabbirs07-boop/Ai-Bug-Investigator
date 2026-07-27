@@ -74,12 +74,16 @@ async function analyzeError({ errorMessage, codeSnippet, language }) {
   const data = await response.json();
   const rawText = data?.choices?.[0]?.message?.content;
 
-  if (!rawText) {
-    const err = new Error("The AI service returned an empty response.");
-    err.status = 502;
-    err.code = "GROQ_EMPTY_RESPONSE";
-    throw err;
-  }
+ if (!response.ok) {
+  const errorBody = await response.text();
+
+  console.error("GROQ API ERROR:", response.status, errorBody);
+
+  const err = new Error("The AI service returned an error. Please try again.");
+  err.status = response.status === 429 ? 429 : 502;
+  err.code = "GROQ_API_ERROR";
+  throw err;
+}
 
   return rawText;
 }
