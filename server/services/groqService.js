@@ -25,6 +25,7 @@ Rules:
 - Respond with ONLY the JSON object. Nothing else.`;
 
 async function analyzeError({ errorMessage, codeSnippet, language }) {
+  console.log("GROQ KEY PRESENT:", !!process.env.GROQ_API_KEY);
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     const err = new Error("Server is missing its AI configuration.");
@@ -64,12 +65,7 @@ async function analyzeError({ errorMessage, codeSnippet, language }) {
     throw err;
   }
 
-  if (!response.ok) {
-    const err = new Error("The AI service returned an error. Please try again.");
-    err.status = response.status === 429 ? 429 : 502;
-    err.code = "GROQ_API_ERROR";
-    throw err;
-  }
+ 
 
   const data = await response.json();
   const rawText = data?.choices?.[0]?.message?.content;
