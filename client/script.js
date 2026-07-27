@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://ai-bug-investigator.onrender.com";
 const HISTORY_KEY = "bugInvestigatorHistory";
 const MAX_HISTORY = 12;
 
