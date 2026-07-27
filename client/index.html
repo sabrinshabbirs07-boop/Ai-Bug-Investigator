@@ -15,6 +15,32 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <span>Samples & History</span>
+      <button id="sidebarClose" class="sidebar-close" aria-label="Close sidebar">✕</button>
+    </div>
+
+    <div class="sidebar-section">
+      <h4>Sample Errors</h4>
+      <div id="sampleList" class="sample-list"></div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-header">
+        <h4>History</h4>
+        <button id="clearHistoryBtn" class="btn-text">Clear</button>
+      </div>
+      <div id="historyList" class="history-list">
+        <p class="empty-note" id="historyEmptyNote">No analyses yet.</p>
+      </div>
+    </div>
+  </aside>
+
+  <div id="sidebarOverlay" class="sidebar-overlay" hidden></div>
+
   <div class="workspace">
     <header class="topbar">
       <div class="topbar-title">
@@ -58,6 +84,8 @@
         <div class="results-header">
           <span id="severityBadge" class="severity-badge"></span>
           <span id="confidenceText"></span>
+          <button id="copyFixBtn" type="button" class="btn-secondary">Copy fix</button>
+          <button id="shareBtn" type="button" class="btn-secondary">Share</button>
           <button id="newAnalysisBtn" type="button" class="btn-secondary">New Analysis</button>
         </div>
 
@@ -88,6 +116,10 @@
         </div>
       </section>
     </main>
+
+    <footer class="app-footer">
+      Built with Claude as part of the AB Talks 60-Day Claude AI Challenge.
+    </footer>
   </div>
 
   <script src="script.js"></script>
