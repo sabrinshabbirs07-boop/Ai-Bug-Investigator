@@ -22,9 +22,11 @@ const resultsSection = document.getElementById("results");
 const newAnalysisBtn = document.getElementById("newAnalysisBtn");
 const copyFixBtn = document.getElementById("copyFixBtn");
 const shareBtn = document.getElementById("shareBtn");
+const heroFraming = document.getElementById("heroFraming");
 
 const severityBadge = document.getElementById("severityBadge");
 const confidenceText = document.getElementById("confidenceText");
+const confidenceFill = document.getElementById("confidenceFill");
 const rootCauseEl = document.getElementById("rootCause");
 const debuggingStepsEl = document.getElementById("debuggingSteps");
 const fixExplanationEl = document.getElementById("fixExplanation");
@@ -63,6 +65,18 @@ function getHljsLanguage(language) {
   return LANGUAGE_MAP[key] || "plaintext";
 }
 
+// --- New: relative time helper for history ---
+function timeAgo(isoString) {
+  const seconds = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000);
+  if (seconds < 60) return "just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
 function showError(message) {
   errorBanner.textContent = message;
   errorBanner.hidden = false;
@@ -79,9 +93,13 @@ function setLoading(isLoading) {
 
 function renderResult(result) {
   currentResult = result;
+  heroFraming.hidden = true;
+
   severityBadge.textContent = result.severity;
   severityBadge.className = `severity-badge severity-${result.severity.toLowerCase()}`;
   confidenceText.textContent = `Confidence: ${result.confidence}%`;
+  confidenceFill.style.width = `${Math.max(0, Math.min(100, result.confidence))}%`;
+
   rootCauseEl.textContent = result.rootCause;
 
   debuggingStepsEl.innerHTML = "";
@@ -124,7 +142,6 @@ function renderResult(result) {
   form.hidden = true;
 }
 
-// ---- Form submit ----
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
@@ -162,24 +179,23 @@ form.addEventListener("submit", async (e) => {
 newAnalysisBtn.addEventListener("click", () => {
   form.hidden = false;
   resultsSection.hidden = true;
+  heroFraming.hidden = false;
   form.reset();
   hideError();
 });
 
-// ---- Copy fix ----
 copyFixBtn.addEventListener("click", async () => {
   if (!currentResult) return;
   try {
     await navigator.clipboard.writeText(currentResult.fix.code);
-    const original = copyFixBtn.textContent;
-    copyFixBtn.textContent = "Copied ✓";
-    setTimeout(() => { copyFixBtn.textContent = original; }, 1500);
+    const original = copyFixBtn.innerHTML;
+    copyFixBtn.innerHTML = "Copied ✓";
+    setTimeout(() => { copyFixBtn.innerHTML = original; }, 1500);
   } catch (err) {
     console.error("Clipboard error:", err);
   }
 });
 
-// ---- Share ----
 function encodeShare(result) {
   const compact = {
     l: result.language, rc: result.rootCause, sv: result.severity, cf: result.confidence,
@@ -203,15 +219,14 @@ shareBtn.addEventListener("click", async () => {
   const url = `${window.location.origin}${window.location.pathname}?result=${encoded}`;
   try {
     await navigator.clipboard.writeText(url);
-    const original = shareBtn.textContent;
-    shareBtn.textContent = "Link copied ✓";
-    setTimeout(() => { shareBtn.textContent = original; }, 1500);
+    const original = shareBtn.innerHTML;
+    shareBtn.innerHTML = "Link copied ✓";
+    setTimeout(() => { shareBtn.innerHTML = original; }, 1500);
   } catch (err) {
     showError("Could not copy the share link. Please copy it manually: " + url);
   }
 });
 
-// ---- History ----
 function getHistory() {
   try {
     const raw = localStorage.getItem(HISTORY_KEY);
@@ -248,7 +263,13 @@ function renderHistory() {
   history.forEach((entry) => {
     const btn = document.createElement("button");
     btn.className = "history-item";
-    btn.innerHTML = `<span>${entry.errorSnippet}</span><span class="hist-sev severity-${entry.severity.toLowerCase()}">${entry.severity}</span>`;
+    btn.innerHTML = `
+      <div class="hist-top">
+        <span>${entry.errorSnippet}</span>
+        <span class="hist-sev severity-${entry.severity.toLowerCase()}">${entry.severity}</span>
+      </div>
+      <span class="hist-time">${timeAgo(entry.timestamp)}</span>
+    `;
     btn.addEventListener("click", () => {
       renderResult(entry.fullResult);
       closeSidebarIfMobile();
@@ -261,7 +282,6 @@ clearHistoryBtn.addEventListener("click", () => {
   renderHistory();
 });
 
-// ---- Samples ----
 function renderSamples() {
   sampleListEl.innerHTML = "";
   SAMPLE_ERRORS.forEach((sample) => {
@@ -274,6 +294,7 @@ function renderSamples() {
       languageSelect.value = sample.language;
       form.hidden = false;
       resultsSection.hidden = true;
+      heroFraming.hidden = false;
       hideError();
       closeSidebarIfMobile();
       errorMessageInput.focus();
@@ -282,7 +303,6 @@ function renderSamples() {
   });
 }
 
-// ---- Sidebar toggle (mobile drawer) ----
 function openSidebar() {
   sidebar.classList.add("open");
   sidebarOverlay.hidden = false;
@@ -298,7 +318,6 @@ sidebarToggle.addEventListener("click", openSidebar);
 sidebarClose.addEventListener("click", closeSidebar);
 sidebarOverlay.addEventListener("click", closeSidebar);
 
-// ---- Load shared result from URL on page load ----
 function loadSharedResultIfPresent() {
   const params = new URLSearchParams(window.location.search);
   const encoded = params.get("result");
@@ -313,7 +332,6 @@ function loadSharedResultIfPresent() {
   }
 }
 
-// ---- Init ----
 renderSamples();
 renderHistory();
 loadSharedResultIfPresent();

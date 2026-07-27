@@ -457,3 +457,123 @@ code {
   .results-header { flex-direction: column; align-items: stretch; }
   .results-header button { width: 100%; }
 }
+
+/* Milestone 3: UX polish additions */
+
+/* 1. Empty-state hero framing */
+.hero-framing {
+  background-color: var(--bg-panel-alt);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 1rem;
+  margin-bottom: var(--space-2);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+.hero-framing strong { color: var(--text-primary); }
+
+/* 2. Confidence bar + severity grouping */
+.severity-group {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.confidence-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 110px;
+}
+#confidenceText {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.confidence-bar {
+  width: 100px;
+  height: 4px;
+  background-color: var(--bg-panel-alt);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.confidence-fill {
+  height: 100%;
+  background-color: var(--accent);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.results-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* 3. Prevention checklist distinction */
+.checklist {
+  list-style: none;
+  padding-left: 0 !important;
+}
+.checklist li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.4rem;
+}
+.checklist li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--severity-low);
+  font-weight: 700;
+}
+.steps-list li {
+  margin-bottom: 0.4rem;
+}
+
+/* 4. Focus-visible accessibility pass */
+.sample-item:focus-visible,
+.history-item:focus-visible,
+.btn-text:focus-visible,
+.sidebar-close:focus-visible,
+.sidebar-toggle:focus-visible,
+.card a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 5. Results entrance animation */
+#results:not([hidden]) {
+  animation: resultsIn 0.35s ease;
+}
+@keyframes resultsIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 6. History relative time */
+.history-item {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+.history-item .hist-top {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+.history-item .hist-time {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 480px) {
+  .results-header { flex-direction: column; align-items: stretch; }
+  .results-actions { margin-left: 0; }
+  .severity-group { flex-wrap: wrap; }
+}
