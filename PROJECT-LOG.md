@@ -100,5 +100,28 @@ The core AI-powered feature is fully functional and tested across multiple langu
 ---
 
 ## Day 5 — Visual Design System: Dark IDE-Inspired Theme
-**Date:** [Day 5 date]
+**Date:** 25 July 2026
+**Status:** ✅ Complete
+
+### What was accomplished
+- Established a CSS design token system in `client/style.css` — colors, spacing scale, border radius, and font variables, replacing all hardcoded values from Day 4.
+- Implemented the font pairing: Inter for UI text, JetBrains Mono for code, loaded via Google Fonts CDN (free, no key required).
+- Integrated `highlight.js` (free CDN) for real syntax highlighting on the AI's suggested fix code block, with a language-mapping function translating the AI's detected language into the correct highlight.js class.
+- Rebuilt the layout as a proper workspace: bordered top bar with a glowing accent indicator, the form contained in a distinct panel, and consistent card-based styling for every result section.
+- Polished all interactive states: hover, active, focus-visible, disabled, and a new animated loading spinner on the "Investigate" button.
+- Verified all 4 UI states individually: empty, loading, results, and error.
+- Confirmed no regressions — the full analysis flow (Groq integration, validation, error handling from Day 4) works identically after all visual changes.
+- Updated `docs/UI-WIREFRAMES.md` to note implementation status and clarify the sidebar (Samples + History) is still pending, scheduled for Day 6.
+
+### Repository
+- **Repo:** `sabrinshabbirs07-boop/Ai-Bug-Investigator`
+- **Commit:** `8518bbb` — "Day 5: Implement dark IDE-inspired design system, workspace layout, and loading states"
+
+### Handoff to Day 6
+Visual design system is complete and verified. Day 6 builds the remaining "wow" features on top of this design system: collapsible sidebar (Samples + History), copy-to-clipboard, shareable result links, and full responsive/mobile support.
+
+---
+
+## Day 6 — Wow Features: Sample Library, Copy, Share & Responsive Pass
+**Date:** [Day 6 date]
 **Status:** ⏳ Not started
