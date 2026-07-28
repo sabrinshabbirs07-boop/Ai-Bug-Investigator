@@ -577,3 +577,16 @@ code {
   .results-actions { margin-left: 0; }
   .severity-group { flex-wrap: wrap; }
 }
+
+/* Milestone 2: character limit warnings */
+.char-warning {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: -0.3rem;
+  margin-bottom: 0.3rem;
+}
+.char-warning-over {
+  color: var(--severity-critical);
+  font-weight: 600;
+}

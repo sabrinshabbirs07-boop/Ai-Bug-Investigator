@@ -9,15 +9,46 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+const ALLOWED_ORIGINS = [
+  'https://ai-bug-investigator-mmidhi0ea-ai-bug-investigator.vercel.app',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+  null // allows direct file:// access (origin is null) for local testing
+];
 
-// Routes
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
+
+// Basic security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+});
+
+app.use(express.json({ limit: '200kb' }));
+
+// Catch malformed JSON bodies and oversized payloads cleanly
+app.use((err, req, res, next) => {
+  if (err.type === 'entity.parse.failed' || err instanceof SyntaxError) {
+    return res.status(400).json({ error: true, message: 'Invalid JSON in request body.', code: 'INVALID_JSON' });
+  }
+  if (err.type === 'entity.too.large') {
+    return res.status(413).json({ error: true, message: 'Request body is too large.', code: 'PAYLOAD_TOO_LARGE' });
+  }
+  next(err);
+});
+
 app.use('/api/health', healthRoute);
 app.use('/api/analyze', analyzeRoute);
 
-// Centralized error handler — must be registered LAST
 app.use(errorHandler);
 
 app.listen(PORT, () => {

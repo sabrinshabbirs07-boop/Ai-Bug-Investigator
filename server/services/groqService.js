@@ -24,8 +24,9 @@ Rules:
 - "resources" should contain 0-2 relevant official documentation links. Use an empty array if nothing specific applies.
 - Respond with ONLY the JSON object. Nothing else.`;
 
+const GROQ_TIMEOUT_MS = 15000;
+
 async function analyzeError({ errorMessage, codeSnippet, language }) {
-  console.log("GROQ KEY PRESENT:", !!process.env.GROQ_API_KEY);
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     const err = new Error("Server is missing its AI configuration.");
@@ -39,6 +40,9 @@ async function analyzeError({ errorMessage, codeSnippet, language }) {
     codeSnippet ? `\nRelated code snippet:\n${codeSnippet}` : "",
     language && language !== "auto" ? `\nProgramming language: ${language}` : "\nProgramming language: not specified, please detect it."
   ].join("\n");
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), GROQ_TIMEOUT_MS);
 
   let response;
   try {
@@ -56,31 +60,40 @@ async function analyzeError({ errorMessage, codeSnippet, language }) {
         ],
         temperature: 0.3,
         max_tokens: 1500
-      })
+      }),
+      signal: controller.signal
     });
-} catch (networkErr) {
-  console.error("GROQ NETWORK ERROR:", networkErr.message);
+  } catch (networkErr) {
+    if (networkErr.name === "AbortError") {
+      const err = new Error("The AI service took too long to respond. Please try again.");
+      err.status = 504;
+      err.code = "GROQ_TIMEOUT";
+      throw err;
+    }
+    const err = new Error("Could not reach the AI service. Please try again.");
+    err.status = 504;
+    err.code = "GROQ_NETWORK_ERROR";
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
-  const err = new Error("Could not reach the AI service. Please try again.");
-  err.status = 504;
-  err.code = "GROQ_NETWORK_ERROR";
-  throw err;
-}
- 
+  if (!response.ok) {
+    const err = new Error("The AI service returned an error. Please try again.");
+    err.status = response.status === 429 ? 429 : 502;
+    err.code = "GROQ_API_ERROR";
+    throw err;
+  }
 
   const data = await response.json();
   const rawText = data?.choices?.[0]?.message?.content;
 
- if (!response.ok) {
-  const errorBody = await response.text();
-
-  console.error("GROQ API ERROR:", response.status, errorBody);
-
-  const err = new Error("The AI service returned an error. Please try again.");
-  err.status = response.status === 429 ? 429 : 502;
-  err.code = "GROQ_API_ERROR";
-  throw err;
-}
+  if (!rawText) {
+    const err = new Error("The AI service returned an empty response.");
+    err.status = 502;
+    err.code = "GROQ_EMPTY_RESPONSE";
+    throw err;
+  }
 
   return rawText;
 }

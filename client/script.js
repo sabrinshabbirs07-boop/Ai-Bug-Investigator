@@ -1,6 +1,9 @@
 const API_BASE = "https://ai-bug-investigator.onrender.com";
 const HISTORY_KEY = "bugInvestigatorHistory";
 const MAX_HISTORY = 12;
+const MAX_ERROR_LENGTH = 5000;
+const MAX_CODE_LENGTH = 8000;
+const VALID_SEVERITIES = ["Critical", "High", "Medium", "Low"];
 
 const SAMPLE_ERRORS = [
   { label: "JS TypeError", errorMessage: "TypeError: Cannot read properties of undefined (reading 'name')", codeSnippet: "console.log(user.profile.name);", language: "javascript" },
@@ -65,7 +68,6 @@ function getHljsLanguage(language) {
   return LANGUAGE_MAP[key] || "plaintext";
 }
 
-// --- New: relative time helper for history ---
 function timeAgo(isoString) {
   const seconds = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000);
   if (seconds < 60) return "just now";
@@ -90,6 +92,29 @@ function setLoading(isLoading) {
   submitBtnText.textContent = isLoading ? "Investigating…" : "Investigate";
   submitBtn.classList.toggle("is-loading", isLoading);
 }
+
+// --- New: character limit warning feedback ---
+function checkLength(input, max, warningId) {
+  let warningEl = document.getElementById(warningId);
+  if (!warningEl) {
+    warningEl = document.createElement("small");
+    warningEl.id = warningId;
+    warningEl.className = "char-warning";
+    input.insertAdjacentElement("afterend", warningEl);
+  }
+  const remaining = max - input.value.length;
+  if (remaining < 200) {
+    warningEl.textContent = remaining < 0
+      ? `${Math.abs(remaining)} characters over the ${max} limit — please shorten this.`
+      : `${remaining} characters remaining.`;
+    warningEl.classList.toggle("char-warning-over", remaining < 0);
+    warningEl.hidden = false;
+  } else {
+    warningEl.hidden = true;
+  }
+}
+errorMessageInput.addEventListener("input", () => checkLength(errorMessageInput, MAX_ERROR_LENGTH, "errorMsgWarning"));
+codeSnippetInput.addEventListener("input", () => checkLength(codeSnippetInput, MAX_CODE_LENGTH, "codeSnippetWarning"));
 
 function renderResult(result) {
   currentResult = result;
@@ -150,6 +175,14 @@ form.addEventListener("submit", async (e) => {
     showError("Please paste an error message or stack trace.");
     return;
   }
+  if (errorMessage.length > MAX_ERROR_LENGTH) {
+    showError(`Error message is too long (max ${MAX_ERROR_LENGTH} characters). Please shorten it.`);
+    return;
+  }
+  if (codeSnippetInput.value.length > MAX_CODE_LENGTH) {
+    showError(`Code snippet is too long (max ${MAX_CODE_LENGTH} characters). Please shorten it.`);
+    return;
+  }
   setLoading(true);
   try {
     const response = await fetch(`${API_BASE}/api/analyze`, {
@@ -204,12 +237,26 @@ function encodeShare(result) {
   };
   return btoa(encodeURIComponent(JSON.stringify(compact)));
 }
+
+// --- Hardened: validates severity and required fields before rendering ---
 function decodeShare(encoded) {
   const compact = JSON.parse(decodeURIComponent(atob(encoded)));
+
+  const severity = VALID_SEVERITIES.includes(compact.sv) ? compact.sv : "Medium";
+  const confidence = typeof compact.cf === "number" ? Math.max(0, Math.min(100, compact.cf)) : 50;
+
   return {
-    language: compact.l, rootCause: compact.rc, severity: compact.sv, confidence: compact.cf,
-    debuggingSteps: compact.ds, fix: { explanation: compact.fx.e, code: compact.fx.c },
-    preventionTips: compact.pt, resources: compact.rs || []
+    language: typeof compact.l === "string" ? compact.l : "unknown",
+    rootCause: typeof compact.rc === "string" ? compact.rc : "No root cause information available.",
+    severity,
+    confidence,
+    debuggingSteps: Array.isArray(compact.ds) ? compact.ds : [],
+    fix: {
+      explanation: compact.fx && typeof compact.fx.e === "string" ? compact.fx.e : "",
+      code: compact.fx && typeof compact.fx.c === "string" ? compact.fx.c : ""
+    },
+    preventionTips: Array.isArray(compact.pt) ? compact.pt : [],
+    resources: Array.isArray(compact.rs) ? compact.rs : []
   };
 }
 
@@ -328,6 +375,7 @@ function loadSharedResultIfPresent() {
     return true;
   } catch (e) {
     console.error("Could not decode shared result:", e);
+    showError("This share link appears to be invalid or corrupted.");
     return false;
   }
 }
