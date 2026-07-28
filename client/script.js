@@ -170,6 +170,10 @@ function renderResult(result) {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
+  if (!navigator.onLine) {
+  showError("You appear to be offline. Please check your internet connection and try again.");
+  return;
+}
   const errorMessage = errorMessageInput.value.trim();
   if (!errorMessage) {
     showError("Please paste an error message or stack trace.");
