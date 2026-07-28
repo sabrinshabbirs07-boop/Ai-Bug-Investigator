@@ -177,5 +177,29 @@ Core functionality and UX are both hardened. Day 8 (per the relabeled blueprint)
 ---
 
 ## Day 8 — Structured Testing & Bug Fixing
-**Date:** [Day 8 date]
+**Date:** 27 July 2026
+**Status:** ✅ Complete
+
+### What was accomplished
+- Conducted a senior-level release-readiness review (QA/Security/Performance lens) across the full stack.
+- **Backend hardening:** locked CORS to an explicit origin allow-list, added explicit body size limits, added clean handling for malformed JSON and oversized payloads, added a 15-second timeout on the Groq API call via `AbortController`, added basic security headers (`X-Content-Type-Options`, `X-Frame-Options`), improved error logging with request context.
+- **Frontend hardening:** added live character-limit feedback on both textareas, added `aria-live="assertive"` to the error banner for screen-reader accessibility, hardened `decodeShare()` to validate severity and all fields before rendering a shared result, added offline detection (`navigator.onLine`) before submitting analysis requests.
+- Verified the CORS lockdown didn't break the live production frontend-to-backend connection — the highest-risk change of the day.
+- Completed a full end-to-end walkthrough on the live production URLs covering every feature built through Day 7 — all passed.
+- Flagged (but deliberately deferred) rate limiting on `/api/analyze` as a future consideration, per the instruction to avoid introducing new scope during a stabilization day.
+- Generated `DAY8-SUMMARY.md` documenting the full review, fixes, and release-readiness verdict.
+
+### Repository & Live URLs
+- **Repo:** `sabrinshabbirs07-boop/Ai-Bug-Investigator`
+- **Live app:** https://ai-bug-investigator-mmidhi0ea-ai-bug-investigator.vercel.app/
+- **Backend:** https://ai-bug-investigator.onrender.com
+- **Commits:** `5c407db` — "Day 8: Frontend hardening - character limits, accessibility, share-link validation", `dd9f677` — "Day 8: Add offline detection before API requests"
+
+### Handoff to Day 9
+The application is stable, hardened, and verified release-ready for this capstone's scope. Day 9 (per the relabeled blueprint) shifts to final polish and portfolio preparation — landing/empty-state copy review, meta tags/favicon, and preparing supporting materials for the Day 11 final showcase. (Deployment itself is already live as of Day 6, so Day 9's original "deployment day" content has already been completed.)
+
+---
+
+## Day 9 — Final Polish, Live QA & Portfolio Prep
+**Date:** [Day 9 date]
 **Status:** ⏳ Not started
