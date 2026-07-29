@@ -1,157 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>AI Bug Investigator — Paste an Error, Get an AI-Powered Fix</title>
-  <meta name="description" content="AI Bug Investigator analyzes your error messages and stack traces, then returns a structured diagnosis: root cause, severity, a concrete fix with code, and prevention tips. Built with Groq AI." />
 
-  <!-- Open Graph / social sharing -->
+  <meta
+    name="description"
+    content="Paste an error. Understand it. Fix it. AI-powered debugging assistant for developers."
+  />
+
+  <!-- Open Graph -->
   <meta property="og:title" content="AI Bug Investigator" />
-  <meta property="og:description" content="Paste an error. Understand it. Fix it. AI-powered debugging assistant for developers." />
+  <meta
+    property="og:description"
+    content="Paste an error. Understand it. Fix it. AI-powered debugging assistant for developers."
+  />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://ai-bug-investigator-mmidhi0ea-ai-bug-investigator.vercel.app/" />
+  <meta property="og:url" content="https://ai-bug-investigator.vercel.app/" />
+  <meta property="og:site_name" content="AI Bug Investigator" />
 
-  <meta name="twitter:card" content="summary" />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="AI Bug Investigator" />
-  <meta name="twitter:description" content="Paste an error. Understand it. Fix it. AI-powered debugging assistant for developers." />
+  <meta
+    name="twitter:description"
+    content="Paste an error. Understand it. Fix it. AI-powered debugging assistant for developers."
+  />
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐛</text></svg>" />
+  <!-- Favicon -->
+  <link
+    rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐛</text></svg>"
+  />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <!-- Highlight.js -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+  />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <span>Samples & History</span>
-      <button id="sidebarClose" class="sidebar-close" aria-label="Close sidebar">✕</button>
-    </div>
-
-    <div class="sidebar-section">
-      <h4>Sample Errors</h4>
-      <div id="sampleList" class="sample-list"></div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-section-header">
-        <h4>History</h4>
-        <button id="clearHistoryBtn" class="btn-text">Clear</button>
-      </div>
-      <div id="historyList" class="history-list">
-        <p class="empty-note" id="historyEmptyNote">No analyses yet.</p>
-      </div>
-    </div>
-  </aside>
-
-  <div id="sidebarOverlay" class="sidebar-overlay" hidden></div>
-
-  <div class="workspace">
-    <header class="topbar">
-      <div class="topbar-title">
-        <span class="topbar-dot"></span>
-        <h1>AI Bug Investigator</h1>
-      </div>
-      <p class="subtitle">Paste an error. Understand it. Fix it.</p>
-    </header>
-
-    <main>
-      <div id="heroFraming" class="hero-framing">
-        <p><strong>Not a chatbot.</strong> Paste a real error and get a structured diagnosis: root cause, severity, a concrete fix, and how to prevent it next time — in seconds.</p>
-      </div>
-
-      <form id="analyzeForm">
-        <label for="errorMessage">Error message / stack trace *</label>
-        <textarea id="errorMessage" rows="5" required placeholder="Paste your error message or stack trace here..."></textarea>
-
-        <label for="codeSnippet">Related code (optional)</label>
-        <textarea id="codeSnippet" rows="5" placeholder="Paste the relevant code snippet, if you have one..."></textarea>
-
-        <label for="language">Language</label>
-        <select id="language">
-          <option value="auto">Auto-detect</option>
-          <option value="javascript">JavaScript</option>
-          <option value="typescript">TypeScript</option>
-          <option value="python">Python</option>
-          <option value="java">Java</option>
-          <option value="csharp">C#</option>
-          <option value="cpp">C++</option>
-          <option value="go">Go</option>
-          <option value="php">PHP</option>
-          <option value="ruby">Ruby</option>
-          <option value="sql">SQL</option>
-        </select>
-
-        <button type="submit" id="submitBtn">
-          <span id="submitBtnText">Investigate</span>
-        </button>
-      </form>
-
-      <div id="errorBanner" class="error-banner" role="alert" aria-live="assertive" hidden></div>
-
-      <section id="results" hidden>
-        <div class="results-header">
-          <div class="severity-group">
-            <span id="severityBadge" class="severity-badge"></span>
-            <div class="confidence-wrap">
-              <span id="confidenceText"></span>
-              <div class="confidence-bar"><div id="confidenceFill" class="confidence-fill"></div></div>
-            </div>
-          </div>
-          <div class="results-actions">
-            <button id="copyFixBtn" type="button" class="btn-secondary">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copy fix
-            </button>
-            <button id="shareBtn" type="button" class="btn-secondary">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-              Share
-            </button>
-            <button id="newAnalysisBtn" type="button" class="btn-secondary">New Analysis</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Root Cause</h3>
-          <p id="rootCause"></p>
-        </div>
-
-        <div class="card">
-          <h3>Debugging Steps</h3>
-          <ol id="debuggingSteps" class="steps-list"></ol>
-        </div>
-
-        <div class="card">
-          <h3>Suggested Fix</h3>
-          <p id="fixExplanation"></p>
-          <pre><code id="fixCode" class="hljs"></code></pre>
-        </div>
-
-        <div class="card">
-          <h3>Prevention Tips</h3>
-          <ul id="preventionTips" class="checklist"></ul>
-        </div>
-
-        <div class="card" id="resourcesCard">
-          <h3>Related Resources</h3>
-          <ul id="resources"></ul>
-        </div>
-      </section>
-    </main>
-
-    <footer class="app-footer">
-      Built with Claude as part of the AB Talks 60-Day Claude AI Challenge.
-    </footer>
-  </div>
-
-  <script src="script.js"></script>
-</body>
-</html>
