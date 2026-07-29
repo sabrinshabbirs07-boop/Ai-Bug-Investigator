@@ -3,7 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Bug Investigator</title>
+  <title>AI Bug Investigator — Paste an Error, Get an AI-Powered Fix</title>
+  <meta name="description" content="AI Bug Investigator analyzes your error messages and stack traces, then returns a structured diagnosis: root cause, severity, a concrete fix with code, and prevention tips. Built with Groq AI." />
+
+  <!-- Open Graph / social sharing -->
+  <meta property="og:title" content="AI Bug Investigator" />
+  <meta property="og:description" content="Paste an error. Understand it. Fix it. AI-powered debugging assistant for developers." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ai-bug-investigator-mmidhi0ea-ai-bug-investigator.vercel.app/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="AI Bug Investigator" />
+  <meta name="twitter:description" content="Paste an error. Understand it. Fix it. AI-powered debugging assistant for developers." />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐛</text></svg>" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,7 +95,8 @@
         </button>
       </form>
 
-<div id="errorBanner" class="error-banner" role="alert" aria-live="assertive" hidden></div>
+      <div id="errorBanner" class="error-banner" role="alert" aria-live="assertive" hidden></div>
+
       <section id="results" hidden>
         <div class="results-header">
           <div class="severity-group">
