@@ -9,24 +9,17 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const ALLOWED_ORIGINS = [
-  'https://ai-bug-investigator.vercel.app',
-  'https://ai-bug-investigator-mmidhi0ea-ai-bug-investigator.vercel.app',
-  'http://localhost:5500',
-  'http://127.0.0.1:5500',
-  null
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
+  origin: [
+    "https://ai-bug-investigator.vercel.app",
+    "https://ai-bug-investigator-mmidhi0ea-ai-bug-investigator.vercel.app",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500"
+  ],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"]
 }));
-
+app.options("*", cors());
 // Basic security headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
