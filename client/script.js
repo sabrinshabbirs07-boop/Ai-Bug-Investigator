@@ -1,4 +1,4 @@
-const API_BASE = "https://ai-bug-investigator.onrender.com";
+const API_BASE = "https://ai-bug-investigator-server.onrender.com";
 const HISTORY_KEY = "bugInvestigatorHistory";
 const MAX_HISTORY = 12;
 const MAX_ERROR_LENGTH = 5000;
