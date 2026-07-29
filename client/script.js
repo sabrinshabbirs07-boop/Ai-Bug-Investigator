@@ -376,6 +376,7 @@ function loadSharedResultIfPresent() {
   try {
     const result = decodeShare(encoded);
     renderResult(result);
+    document.getElementById("sharedBanner").hidden = false;
     return true;
   } catch (e) {
     console.error("Could not decode shared result:", e);
