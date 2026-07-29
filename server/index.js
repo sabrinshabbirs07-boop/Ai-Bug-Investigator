@@ -10,10 +10,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const ALLOWED_ORIGINS = [
+  'https://ai-bug-investigator.vercel.app',
   'https://ai-bug-investigator-mmidhi0ea-ai-bug-investigator.vercel.app',
   'http://localhost:5500',
   'http://127.0.0.1:5500',
-  null // allows direct file:// access (origin is null) for local testing
+  null
 ];
 
 app.use(cors({
